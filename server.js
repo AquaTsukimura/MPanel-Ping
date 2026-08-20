@@ -47,19 +47,28 @@ app.post('/wardrobe', (req, res) => {
     return res.sendStatus(400);
   }
 
-  const { userId, panel, skins } = req.body;
+  const { userId, name, panel, skins } = req.body;
 
   if (!userId || panel !== 'brodonttouchme') {
     return res.sendStatus(403);
   }
 
   const now = Date.now();
-  wardrobeData.set(userId, { skins, lastSeen: now });
+
+  wardrobeData.set(userId, {
+    name: name || 'Processing..',
+    skins,
+    lastSeen: now
+  });
 
   const players = [];
 
   for (const [id, data] of wardrobeData.entries()) {
-    players.push({ userId: id, skins: data.skins });
+    players.push({
+      userId: id,
+      name: data.name,
+      skins: data.skins
+    });
   }
 
   const responsePayload = JSON.stringify({ players });
